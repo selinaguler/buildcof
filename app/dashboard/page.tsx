@@ -45,7 +45,17 @@ export default function DashboardPage() {
   return (
     <main className="p-8 text-zinc-900 dark:text-zinc-100">
 
-      <h1 className="text-3xl font-bold mb-6">Your COF Structures</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Your COF Structures</h1>
+
+        {/* Always-visible Create button */}
+        <Link
+          href="/cofs/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          + Create New Structure
+        </Link>
+      </div>
 
       {/* If no COFs exist */}
       {cofs.length === 0 && (
@@ -54,63 +64,69 @@ export default function DashboardPage() {
 
           <Link
             href="/cofs/new"
-            className="bg-blue-600 text-white px-4 py-3 rounded"
+            className="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700"
           >
-            Create New Structure
+            Create Your First Structure
           </Link>
         </div>
       )}
 
       {/* List COF cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {cofs.map((cof: any) => (
-          <div key={cof.id} className="border p-4 rounded shadow-sm bg-white dark:bg-zinc-900">
-            <h2 className="text-xl font-semibold">{cof.name}</h2>
+      {cofs.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {cofs.map((cof: any) => (
+            <div
+              key={cof.id}
+              className="border p-4 rounded shadow-sm bg-white dark:bg-zinc-900"
+            >
+              <h2 className="text-xl font-semibold">{cof.name}</h2>
 
-            <p className="text-sm mt-2">
-              <strong>Linker 1:</strong> {cof.linker1 || "—"}
-            </p>
-            <p className="text-sm">
-              <strong>Linker 2:</strong> {cof.linker2 || "—"}
-            </p>
-            <p className="text-sm">
-              <strong>Topology:</strong> {cof.topology || "—"}
-            </p>
+              <p className="text-sm mt-2">
+                <strong>Linker 1:</strong> {cof.linker1 || "—"}
+              </p>
+              <p className="text-sm">
+                <strong>Linker 2:</strong> {cof.linker2 || "—"}
+              </p>
+              <p className="text-sm">
+                <strong>Topology:</strong> {cof.topology || "—"}
+              </p>
 
-            <div className="flex gap-3 mt-4">
-              <Link
-                href={`/cofs/${cof.id}`}
-                className="px-3 py-1 bg-green-600 text-white rounded"
-              >
-                View
-              </Link>
+              <div className="flex gap-3 mt-4">
+                <Link
+                  href={`/cofs/${cof.id}`}
+                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  View
+                </Link>
 
-              <Link
-                href={`/cofs/${cof.id}?edit=true`}
-                className="px-3 py-1 bg-yellow-500 text-white rounded"
-              >
-                Edit
-              </Link>
+                <Link
+                  href={`/cofs/${cof.id}?edit=true`}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                >
+                  Edit
+                </Link>
 
-              <button
-                className="px-3 py-1 bg-red-600 text-white rounded"
-                onClick={async () => {
-                  const res = await fetch(`/api/cofs/${cof.id}`, { method: "DELETE" });
+                <button
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  onClick={async () => {
+                    const res = await fetch(`/api/cofs/${cof.id}`, {
+                      method: "DELETE",
+                    });
 
-                  if (res.ok) {
-                    // Instantly remove card from screen
-                    setCofs(prev => prev.filter(item => item.id !== cof.id));
-                  }
-                }}
-              >
-                Delete
-              </button>
-
+                    if (res.ok) {
+                      setCofs((prev) =>
+                        prev.filter((item) => item.id !== cof.id)
+                      );
+                    }
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
-
